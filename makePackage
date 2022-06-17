@@ -1,0 +1,13 @@
+
+export END_LINE_CONVERTER=""
+./mkpkg --for-xtest
+
+cp -rf ~/hypnos/product/win32.x86/build/c++test/etc/embeddedstubs/ ~/hypnos/product/win32.x86/etc/
+cp -rf ~/hypnos/product/win32.x86/build/c++test/etc/safestubs/ ~/hypnos/product/win32.x86/etc/
+cp -rf ~/hypnos/product/win32.x86/build/c++test/etc/templates/ ~/hypnos/product/win32.x86/etc/
+
+cp -rf ~/hypnos/product/win32.x86/build/c++test/etc/safestubs_win32/ ~/hypnos/product/win32.x86/etc/
+cp -rf ~/hypnos/product/win32.x86/build/c++test/etc/safestubs_linux/ ~/hypnos/product/win32.x86/etc/
+cp -rf ~/hypnos/product/win32.x86/build/c++test/etc/safestubs_solaris/ ~/hypnos/product/win32.x86/etc/
+cp -rf ~/hypnos/product/win32.x86/build/c++test/etc/safestubs_aix/ ~/hypnos/product/win32.x86/etc/
+

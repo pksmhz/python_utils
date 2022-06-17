@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+# $Id: reBranch.py,v 1.50 2009-10-16 08:11:59 modtest Exp $
+'''
+Created on 2010-05-13
+
+@author: pstrycha
+'''
+
+import os
+import sys
+
+if len(sys.argv) == 2:
+    arg1 = sys.argv[1]
+else:
+    exit("Bad number of parameters.")
+    
+
+dirs = []
+
+currentPath = os.getcwd()
+entries = os.listdir(currentPath)
+    
+for e in entries:
+    if os.path.isdir(e):
+        dirs.append(e)
+        
+for d in dirs:
+    info = os.popen("svn info " + d)
+    for i in info.readlines():
+        firstToken = i.split()[0]
+        if firstToken == "URL:":
+            baseUrl = i.split()[1]
+            if baseUrl.find("branches") != -1:
+                splitStr = "branches"
+            elif baseUrl.find("trunk") != -1:
+                splitStr = "trunk"
+            else:
+                break
+            
+            firstPart = baseUrl.split(splitStr)[0]
+            secondPart = baseUrl.split(splitStr)[1]
+            
+            #strip branch name
+            if splitStr == "branches":
+                pos = secondPart.find("/", 1)
+                if pos != -1:
+                    secondPart = secondPart[pos:]
+            
+            if arg1 == "trunk":
+                targetUrl = firstPart + arg1 + secondPart
+            else:    
+                targetUrl = firstPart + "branches/" + arg1 + secondPart
+            
+            cmdToExecute = "svn merge " + targetUrl + " " + d
+            print("Updating '" + d + "' subdir with '" + targetUrl + "' ...")
+            os.system(cmdToExecute)
+            break
+

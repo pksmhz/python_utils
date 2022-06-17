@@ -1,0 +1,4 @@
+#!/bin/bash
+
+find . -name *.exe.stackdump -print0 | xargs -0 rm
+

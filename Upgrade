@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+# $Id: reBranch.py,v 1.50 2009-10-16 08:11:59 modtest Exp $
+'''
+Created on 2010-05-13
+
+@author: pstrycha
+'''
+
+import os
+import sys
+
+if len(sys.argv) == 2:
+    arg1 = sys.argv[1]
+else:
+    exit("Bad number of parameters.")
+    
+
+dirs = []
+counter = 1
+
+currentPath = os.getcwd()
+entries = os.listdir(currentPath)
+    
+for e in entries:
+    if os.path.isdir(e):
+        dirs.append(e)
+        
+for d in dirs:
+    print("Checking '" + d + "' directory[" + str(counter) + "/" + str(len(dirs)) + "].")
+    counter = counter + 1
+
+    info = os.popen("svn upgrade " + d)

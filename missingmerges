@@ -1,0 +1,94 @@
+#!/bin/bash
+
+function showHelp()
+{
+    echo "
+Available options:
+    --user=<string>        - user name
+    --head=<dir or url>    - default: http://devel1.parasoft.com.pl/svn/repos/cpptest/trunk
+    --branch=<dir or url>  - branch to compare
+    -v                     - show commit log for each change
+    -vv                    - show commit log and file list for each change
+    --help                 - this help
+    
+Any other option starting with - is an error. Any other option is assumed to be --branch=
+"
+}
+
+head="http://devel1.parasoft.com.pl/svn/repos/cpptest/trunk"
+branch=
+userName=
+verbose=0
+
+for o in "$@" ; do
+  case "$o" in
+    --user=* )
+      userName=`echo $o | sed -e "s:--user=::"`
+      ;;
+    --head=* )
+      head=`echo $o | sed -e "s:--head=::"`
+      ;;
+    --branch=* )
+      branch=`echo $o | sed -e "s:--branch=::"`
+      ;;
+    -v )
+      verbose=1
+      ;;
+    -vv )
+      verbose=2
+      ;;
+    --help )
+      showHelp
+      exit 1
+      ;;
+    -* )
+      echo "Unknown option: $o"
+      exit 1
+      ;;
+    * )
+      branch=$o
+      ;;
+  esac
+done
+
+if [ "$branch" != "" ] && [ "${branch:0:7}" != "http://" ]; then
+  cd "$branch"
+fi
+
+if [ "${branch:0:7}" == "http://" ]; then
+  hbranch="$branch"
+fi
+
+# find branch first revision
+firstBranch=`svn log --stop-on-copy -q $hbranch | grep "^r" | tail -n 1`
+firstBranchR=`echo "$firstBranch" | sed -e "s: |.*::" -e "s/^r//"`
+
+# get mergeinfo from branch:
+mergeinfo=`svn mergeinfo $head $hbranch` 
+# and get log for merginfo
+cmdLine=`echo $mergeinfo | sed -e "s:r:-r:g"`
+if [ "$cmdLine" != "" ] ; then
+  branchLog=`svn log $cmdLine $head`
+fi
+
+# get log info from head since firstBranchR
+headLog=`svn log -r HEAD:$firstBranchR $head | grep "^r[[:digit:]]" | sort`
+
+if [ "$userName" != "" ] ; then
+  headLog=`echo "$headLog" | grep "$userName"`
+  branchLog=`echo "$branchLog" | grep "$userName"`
+fi
+
+echo "$headLog" > headLog
+diffs=`echo "$branchLog" | diff - "headLog" | grep "^>" | sed -e "s:^> ::"`
+rm headLog
+
+if [ "$verbose" != 0 ] ; then
+  if [ $verbose == 2 ] ; then
+    v="-v"
+  fi
+  cmdLine=`echo "$diffs" | sed -e "s: |.*::" | sed -e "s:r:-r:g"`
+  [ "$cmdLine" != "" ] && svn log $cmdLine $v $head
+else
+  echo "$diffs"
+fi

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+export BLDROOT=`pwd`
+export PATH=$BLDROOT/config/tools:$BLDROOT/product/win32.x86/bin:$PATH
+
+. $BLDROOT/config/tools/config_envars
+
+. $BLDROOT/config/tools/vc9.0.sh
+
+DEVEL_ENGINE_DIR_CYG=$BLDROOT/product/win32.x86
+export DEVEL_ENGINE_DIR=`cygpath -w ${DEVEL_ENGINE_DIR_CYG}`
+
+CTEST="cpptest"
+BRANCH_ROOT="workspace/cpptest"
+
+LEN=`expr ${#BLDROOT} - ${#CTEST}` 
+LEN_BRANCH=`expr ${#BLDROOT} - ${#BRANCH_ROOT}` 
+
+WORKSPACE=`cygpath -w ${BLDROOT:0:$LEN}`
+export DEVEL_WORKSPACE=`cygpath -w ${BLDROOT:0:$LEN_BRANCH}`"devel_work"
+
+export TARGET_CFG="win32.x86"
+
+echo "***************************************************************************************"
+echo "Using workspace:       ${WORKSPACE}"
+echo "Using BLDROOT:         ${BLDROOT}"
+echo "Using DEVEL_ENGINE:    ${DEVEL_ENGINE_DIR}"
+echo "Using DEVEL_WORKSPACE: ${DEVEL_WORKSPACE}"
+echo "Using TARGET_CFG:      ${TARGET_CFG}"
+echo "***************************************************************************************"
+
+/cygdrive/e/ti52/ccsv5/eclipse/ccstudio.exe
+

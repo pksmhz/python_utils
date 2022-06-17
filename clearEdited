@@ -1,0 +1,4 @@
+#!/bin/bash
+
+find . -name *.edited -print0 | xargs -0 rm
+
