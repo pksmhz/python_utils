@@ -14,6 +14,7 @@ inputFile = None
 outputFile = None
 lineToWrite = None
 
+print("using arguments: {}".format(sys.argv))
 if len(sys.argv) > 2:
     inputFile = sys.argv[1]
     outputFile = sys.argv[2]
@@ -22,9 +23,6 @@ else:
 
 if not inputFile and not outputFile:
     exit("Bad parameters.")
-
-# site_url = 'http://www.randomdatabase.com/database_files/csv/main_database.csv'
-# file_name = wget.download(site_url)
 
 inF = open(inputFile)
 outF = open(outputFile, "w")
@@ -40,7 +38,6 @@ for line in inF:
         second = match.group(3)
         first = format_value(first)
         second = format_value(second)
-        print("got match: (1) {} (2) {}".format(first, second))
         outputLine = "{}{}: {}".format(beginning_of_the_line, first, second)
         lineToWrite = outputLine + "\n"
     else:
