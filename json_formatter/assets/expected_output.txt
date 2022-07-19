@@ -1,0 +1,11 @@
+{
+    'data': {
+        'ACTION': [
+            {
+                'uiField': 'AUDIT_HISTORY',
+                'key': 'DB_SL_TRD',
+                'value': 'Client\'s cust acc {{custAccCode}} requires.'
+            }
+        ]
+    }
+}
